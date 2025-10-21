@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Torchlight Infinite – Farm Profit Calculator (+ AH Tax)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo"><span>∞</span></div>
+      <div>
+        <h1>Torchlight Infinite – Farm Profit Calculator</h1>
+        <div class="subtitle">Timer • Costs • Items • AH Tax • Profit/hour</div>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="inner">
+        <h2>Timer</h2>
+        <div class="timer">
+          <div class="time" id="timeDisplay">00:00:00</div>
+          <div class="btns">
+            <button class="btn-accent" id="startBtn">Start</button>
+            <button class="btn-ghost" id="stopBtn">Stop</button>
+            <button class="btn-danger" id="resetTimerBtn">Reset</button>
+          </div>
+        </div>
+        <div style="height:12px"></div>
+        <div class="summary">
+          <div class="kpi"><small>Revenue (post-tax)</small><div class="value" id="kpiRevenue">—</div></div>
+          <div class="kpi"><small>AH Tax (1/8)</small><div class="value" id="kpiTax">—</div></div>
+          <div class="kpi"><small>Total Cost</small><div class="value" id="kpiCost">—</div></div>
+          <div class="kpi"><small>Net Profit</small><div class="value" id="kpiNet">—</div></div>
+          <div class="kpi"><small>Profit / Hour</small><div class="value" id="kpiPph">—</div></div>
+        </div>
+        <div class="disclaimer">Shortcuts: <b>Space</b> start/stop • <b>r</b> reset. Tax is always ON (1 FE per 8 FE revenue).</div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+      <div class="inner">
+        <h2>Costs</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:28%">Item</th>
+              <th style="width:18%">Qty</th>
+              <th style="width:22%">Unit Price (FE)</th>
+              <th style="width:22%">Line Total</th>
+              <th style="width:10%"></th>
+            </tr>
+          </thead>
+          <tbody id="costTbody"></tbody>
+        </table>
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <button class="btn-accent" id="addCostBtn">+ Add Cost</button>
+          <button id="exportBtn">Export JSON</button>
+          <button id="importBtn">Import JSON</button>
+          <input type="file" id="fileInput" accept="application/json" style="display:none" />
+          <button id="resetAllBtn">Clear All</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+      <div class="inner">
+        <h2>Items (Revenue)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:28%">Item</th>
+              <th style="width:18%">Qty</th>
+              <th style="width:22%">Unit Price (FE)</th>
+              <th style="width:22%">Line Total</th>
+              <th style="width:10%"></th>
+            </tr>
+          </thead>
+          <tbody id="itemTbody"></tbody>
+        </table>
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <button class="btn-accent" id="addItemBtn">+ Add Item</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>Pro tip: start the timer when you begin farming, then add/update rows as you go. Profit/hour updates automatically.</div>
+    </footer>
+  </div>
+
+  <datalist id="itemNames">
+    <option value="A Terrible Price"></option>
+    <option value="Abundance Compass Arcana Compass Trump"></option>
+    <option value="Activation Medium"></option>
+    <option value="Active Skill"></option>
+    <option value="Aeterna Key"></option>
+    <option value="Aeterna Key Fleeting Aeterna Key Eternal"></option>
+    <option value="Amberon Core"></option>
+    <option value="Ancient Blenders Tear"></option>
+    <option value="Antinomy"></option>
+    <option value="Antonius Help"></option>
+    <option value="Antonius Research"></option>
+    <option value="Aureole Rock"></option>
+    <option value="Authority T2 Queens Grace Lust T3 Compass Sinful"></option>
+    <option value="Base Mod"></option>
+    <option value="Beacon Compass Ecliptic Compass Vast Ecliptic Compass Ascendant"></option>
+    <option value="Beginning of the End"></option>
+    <option value="Beginning of the Past"></option>
+    <option value="Blacksail Compass Cube Compass Cube"></option>
+    <option value="Blade Dancers Edges"></option>
+    <option value="Brave I"></option>
+    <option value="Brave V"></option>
+    <option value="Card Arcana Compass The Fated Arcana Compass Sandlord"></option>
+    <option value="Clergy Thinking"></option>
+    <option value="Coldness"></option>
+    <option value="Compass Boss Compass Beacon"></option>
+    <option value="Compass Boss Compass Beacon Compass Progressing"></option>
+    <option value="Compass Deep Space Probe Beacon"></option>
+    <option value="Compass Familial Aeterna Compass Nightmare Compass Folklore"></option>
+    <option value="Compass General Hunting Compass Mechanical Compass Brilliant"></option>
+    <option value="Compass Progressing Beacon"></option>
+    <option value="Compass Uncanny Folklore Compass Doll Compass Collection"></option>
+    <option value="Compass Veteran Compass Unrivaled Veteran Compass Elite"></option>
+    <option value="Corner of Divinity"></option>
+    <option value="Corrupted Axis"></option>
+    <option value="Crows Wail"></option>
+    <option value="Dart Edict"></option>
+    <option value="Deep Space Probe Beacon"></option>
+    <option value="Deep Space Probe Compass"></option>
+    <option value="Deep Space Probe Ember"></option>
+    <option value="Deep Space Probe Fluorescent"></option>
+    <option value="Deep Space Probe Gear"></option>
+    <option value="Defile the Stars"></option>
+    <option value="Desire Core Creation T2"></option>
+    <option value="Desire Core Devastation T3"></option>
+    <option value="Desire Core Record T1"></option>
+    <option value="Disappearing Shadow"></option>
+    <option value="Dive Edict"></option>
+    <option value="Divine Supernova"></option>
+    <option value="Divinity Emblem Hunting"></option>
+    <option value="Divinity Emblem Machine"></option>
+    <option value="Divinity Emblem Machine Divinity Emblem Might Divinity Emblem War Divinity Emblem Hunting"></option>
+    <option value="Divinity Emblem Might"></option>
+    <option value="Divinity Emblem War"></option>
+    <option value="Divinity Fragment"></option>
+    <option value="Divinity Pact Assorted"></option>
+    <option value="Divinity Pact Fragment"></option>
+    <option value="Divinity Stone"></option>
+    <option value="Doll Artifact Compass Frozen Compass Frozen"></option>
+    <option value="Echo of the Gods"></option>
+    <option value="Ecliptic Compass Renown Edge Compass Militant Compass Priceless"></option>
+    <option value="Edict Dart Edict Dive Edict Ruin Edict Doom"></option>
+    <option value="Elite Compass Boss Compass Beacon"></option>
+    <option value="Ember Compass Reserve Ember Compass Fluorescent Compass Colorful"></option>
+    <option value="End of Divinity"></option>
+    <option value="End of the Past"></option>
+    <option value="Epic Wedge"></option>
+    <option value="Eternal Edict"></option>
+    <option value="Eternity"></option>
+    <option value="Fallen Starlight"></option>
+    <option value="Familiar Nexus"></option>
+    <option value="Fire Gods Footsteps"></option>
+    <option value="Fire Lords"></option>
+    <option value="Flame Elementium"></option>
+    <option value="Flame Sand"></option>
+    <option value="Flame Sand Flame Elementium Precious Ember Matchless Ember Ultimate Ember Truth Fossil Sacred Fossil"></option>
+    <option value="Flame Sand Flame Elementium Precious Ember Matchless Ember Ultimate Ember Truth Fossil Sacred Fossil Amberon Core"></option>
+    <option value="Flame Sand Flame Elementium Precious Ember Matchless Ember Ultimate Ember Truth Fossil Sacred Fossil Amberon Core Familiar Nexus Corrupted Axis Glorious Axis Shallow Dream Weapon Shallow Dream Armor Shallow Dream Trinket Sage Silver Mound Soft Rush Night Blooming Cereus Gloomy Daffodil Golden Iris Giant Civet Musk Sandalwood Incense Stygian Benzoin Ancient Blenders Tear Base Mod Mod Warlock Mod Vanguard Mod Sniper Mod Tank Token Energy Token Fluorescent Token Affix Token Fate Token Corrosion Token"></option>
+    <option value="Fleeting Aeterna Key"></option>
+    <option value="Fluorescent Compass Focus Fluorescent Compass War Compass Valiant"></option>
+    <option value="Gaze Upon Reflection"></option>
+    <option value="Giant Civet Musk"></option>
+    <option value="Glacial Abyss Beacon T7"></option>
+    <option value="Glacial Abyss Beacon T8"></option>
+    <option value="Gloomy Daffodil"></option>
+    <option value."Glorious Axis"></option>
+    <option value="God of Deception Slate"></option>
+    <option value="God of Hunting Slate"></option>
+    <option value="God of Knowledge Slate"></option>
+    <option value="God of Machines Slate"></option>
+    <option value="God of Might Slate"></option>
+    <option value="God of War Slate"></option>
+    <option value="Golden Iris"></option>
+    <option value="Helio Rock"></option>
+    <option value="Hundredfold Windfall"></option>
+    <option value="Immolating Flame"></option>
+    <option value="Inspiration Essence"></option>
+    <option value="Kismet Dual"></option>
+    <option value="Kismet Lone"></option>
+    <option value="Lava Sea Beacon T7"></option>
+    <option value="Lava Sea Beacon T8"></option>
+    <option value="Legendary Wedge"></option>
+    <option value="Legends Energy Core"></option>
+    <option value="Lightning Strikers"></option>
+    <option value="Lost Secrets"></option>
+    <option value="Magic Memory Thread"></option>
+    <option value="Magic Wedge"></option>
+    <option value="Magnificent Skill"></option>
+    <option value="Matchless Ember"></option>
+    <option value="Mauds Trick"></option>
+    <option value="Mechanical Artifact Compass Cruising Mechanical Artifact Compass Dark"></option>
+    <option value="Medium Fate"></option>
+    <option value="Memory of Discipline"></option>
+    <option value="Memory of Origin"></option>
+    <option value="Memory of Progress"></option>
+    <option value="Memory Thread"></option>
+    <option value="Micro Fate"></option>
+    <option value="Might Artifact Compass Mecha Might Artifact Compass Hunting"></option>
+    <option value="Militant Compass Trinket Militant Compass Ember Compass Bounty"></option>
+    <option value="Mist Essence"></option>
+    <option value="Mod Sniper"></option>
+    <option value="Mod Tank"></option>
+    <option value="Mod Vanguard"></option>
+    <option value="Mod Warlock"></option>
+    <option value="New God Unifying Wedge"></option>
+    <option value="Night Blooming Cereus"></option>
+    <option value="Noble Skill"></option>
+    <option value="Novel Compass Soldier Compass Strength"></option>
+    <option value="Pages of Aeterna"></option>
+    <option value="Passive Skill"></option>
+    <option value="Pedigree of the Gods"></option>
+    <option value="Plunder Compass Novel Compass Lavish Novel Compass Conquering"></option>
+    <option value="Plunder Compass Sinful Plunder Artifact Compass Transgression"></option>
+    <option value="Portent Moon"></option>
+    <option value="Precious Ember"></option>
+    <option value="Precise Skill"></option>
+    <option value="Priceless Memory Scrap"></option>
+    <option value="Probe Compass Deep"></option>
+    <option value="Profound Probe Compass"></option>
+    <option value="Profound Probe Divinity Stone"></option>
+    <option value="Profound Probe Ember"></option>
+    <option value="Profound Probe Flourishing"></option>
+    <option value="Profound Probe Fluorescent"></option>
+    <option value="Profound Probe Fluorescent Deep Space Probe Compass Profound"></option>
+    <option value="Profound Probe Gear"></option>
+    <option value="Pyric Stride"></option>
+    <option value="Queens Grace Authority T2"></option>
+    <option value="Queens Grace Lust T3"></option>
+    <option value="Queens Grace Slaughter T1"></option>
+    <option valueValue="Queens Wick Imprisioned T1"></option>
+    <option value="Queens Wick Pursuit T2"></option>
+    <option value="Queens Wick Revenge T3"></option>
+    <option value="Rare Memory Thread"></option>
+    <option value="Rare Wedge"></option>
+    <option value="Residents Eye"></option>
+    <option value="Reversed Plumes"></option>
+    <option value="Ruin Edict"></option>
+    <option value="Sacred Fossil"></option>
+    <option value="Sacrum Harbingers"></option>
+    <option value="Sandalwood Incense"></option>
+    <option value="Sandlord"></option>
+    <option value="Second Divinity"></option>
+    <option value="Secret of Glacial Abyss"></option>
+    <option value="Shallow Dream Armor"></option>
+    <option value="Shallow Dream Trinket"></option>
+    <option value="Shallow Dream Weapon"></option>
+    <option value="Snowpaper Fragment"></option>
+    <option value="Soft Rush"></option>
+    <option value="Solidified Tear"></option>
+    <option value="Soul Candle T0"></option>
+    <option value="Soul Candle T1"></option>
+    <option value="Soul Candle T2"></option>
+    <option value="Space Rift"></option>
+    <option value="Sparks of Moth"></option>
+    <option value="Sprout of Legends"></option>
+    <option value="Star Net"></option>
+    <option value="Starry Sky"></option>
+    <option value="Starry Sky Deep Space Beacon"></option>
+    <option value="Steel Forge Beacon T7"></option>
+    <option value="Steel Forge Beacon T8"></option>
+    <option value="Stray Fireflies"></option>
+    <option value="Stygian Benzoin"></option>
+    <option value="Supernova Explosion"></option>
+    <option value="Support Skill"></option>
+    <option value="Surge Compass Bandit Dark Surge Compass Divine"></option>
+    <option value="The Beginning"></option>
+    <option value="The End"></option>
+    <option value="The Kiss of the Heartless"></option>
+    <option value="Thunder Wastes Beacon T7"></option>
+    <option value="Thunder Wastes Beacon T8"></option>
+    <option value="Tomorrows Direction"></option>
+    <option value="Tracers Tear"></option>
+    <option value="Truth Flourishing"></option>
+    <option value="Truth Fossil"></option>
+    <option value="Twin Reflection"></option>
+    <option value="Two Extremes Compass Desire Incarnation Cube Compass Aeterna"></option>
+    <option value="Ultimate Ember"></option>
+    <option value="Uncertain Voyage"></option>
+    <option value="Undetermined Fate"></option>
+    <option value="Unfettered Constellation"></option>
+    <option value="Unhatched Shadow"></option>
+    <option value="Void Sea Craving T1"></option>
+    <option value="Void Sea Ecstacy T2"></option>
+    <option value="Void Sea Sorrow T3"></option>
+    <option value="Voidlands Beacon T7 Voidlands Beacon T8"></option>
+    <option value="Walkers Boots"></option>
+    <option value="Wandering Star"></option>
+    <option value="War Compass Might Compass Flourishing"></option>
+    <option value="Warrior Dark Surge Compass Blacksail Compass Returning"></option>
+    <option value="When Sparks Set the Prairie Ablaze"></option>
+    <option value="Winding Key"></option>
+    <option value="Winter of Origin"></option>
+  </datalist>
+
+  <script src="app.js"></script>
+</body>
+</html>
