@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Torchlight Infinite – Farm Profit Calculator (+ AH Tax)</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #121822;
+      --panel-2: #0f141c;
+      --accent: #ff8c32;
+      --accent-2: #ffc16e;
+      --text: #e7eef7;
+      --muted: #9fb0c3;
+      --danger: #ff5a63;
+      --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial;
+      background: radial-gradient(1200px 700px at 80% -100px, #1b2230 0%, transparent 60%), var(--bg);
+      color: var(--text);
+      line-height: 1.4
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 32px auto;
+      padding: 0 16px
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: grid;
+      place-items: center;
+      box-shadow: var(--shadow)
+    }
+
+    .logo span {
+      font-weight: 900;
+      color: #121212
+    }
+
+    h1 {
+      font-size: clamp(20px, 4vw, 30px);
+      margin: 0
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px
+    }
+
+    .card {
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 1px solid rgba(255, 255, 255, .05);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow)
+    }
+
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 18px
+    }
+
+    .card .inner {
+      padding: 18px
+    }
+
+    .timer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap
+    }
+
+    .time {
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: 1px
+    }
+
+    .btns {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      background: #1a2331;
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .05s ease, filter .2s ease;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .05)
+    }
+
+    button:hover {
+      filter: brightness(1.15)
+    }
+
+    button:active {
+      transform: translateY(1px)
+    }
+
+    .btn-accent {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #111;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .05)
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ff6e6e, var(--danger));
+      color: #111
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 10px
+    }
+
+    thead th {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      font-weight: 800;
+      text-align: left;
+      padding: 0 10px
+    }
+
+    tbody td {
+      background: #0e141d;
+      padding: 12px 10px;
+      vertical-align: middle
+    }
+
+    tbody tr td:first-child {
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px
+    }
+
+    tbody tr td:last-child {
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px
+    }
+
+    input[type="number"],
+    input[type="text"] {
+      width: 100%;
+      background: #0b111a;
+      border: 1px solid rgba(255, 255, 255, .06);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 14px
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px
+    }
+
+    @media(min-width:700px) {
+      .summary {
+        grid-template-columns: repeat(5, minmax(0, 1fr))
+      }
+    }
+
+    .kpi {
+      background: linear-gradient(180deg, #0c1119, #0a0f16);
+      border: 1px solid rgba(255, 255, 255, .06);
+      padding: 16px;
+      border-radius: 14px
+    }
+
+    .kpi small {
+      color: var(--muted);
+      display: block;
+      margin-bottom: 6px
+    }
+
+    .kpi .value {
+      font-weight: 900;
+      font-size: 20px
+    }
+
+    .disclaimer {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px
+    }
+
+    footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 12px
+    }
+
+    .export-option:hover {
+      background: rgba(255, 255, 255, .1) !important
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="logo"><span>∞</span></div>
+      <div>
+        <h1>Torchlight Infinite – Farm Profit Calculator</h1>
+        <div class="subtitle">Timer • Costs • Items • AH Tax • Profit/hour</div>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="inner">
+        <h2>Timer</h2>
+        <div class="timer">
+          <div class="time" id="timeDisplay">00:00:00</div>
+          <div class="btns">
+            <button class="btn-accent" id="startBtn">Start</button>
+            <button class="btn-ghost" id="stopBtn">Stop</button>
+            <button class="btn-danger" id="resetTimerBtn">Reset</button>
+          </div>
+        </div>
+        <div style="height:12px"></div>
+        <div class="summary">
+          <div class="kpi"><small>Revenue (post-tax)</small>
+            <div class="value" id="kpiRevenue">—</div>
+          </div>
+          <div class="kpi"><small>AH Tax (1/8)</small>
+            <div class="value" id="kpiTax">—</div>
+          </div>
+          <div class="kpi"><small>Total Cost</small>
+            <div class="value" id="kpiCost">—</div>
+          </div>
+          <div class="kpi"><small>Net Profit</small>
+            <div class="value" id="kpiNet">—</div>
+          </div>
+          <div class="kpi"><small>Profit / Hour</small>
+            <div class="value" id="kpiPph">—</div>
+          </div>
+        </div>
+        <div class="disclaimer">Shortcuts: <b>Space</b> start/stop • <b>r</b> reset. Tax is 1/8 of revenue (Flame
+          Elementium exempt).</div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+      <div class="inner">
+        <h2>Data Management</h2>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <div style="position:relative">
+            <button id="exportBtn">Export ▼</button>
+            <div id="exportMenu"
+              style="display:none;position:absolute;top:100%;left:0;background:var(--panel);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px;min-width:160px;z-index:1000;box-shadow:var(--shadow)">
+              <button class="export-option" data-type="costs"
+                style="display:block;width:100%;text-align:left;background:none;border:none;color:var(--text);padding:6px 8px;border-radius:4px;margin-bottom:2px">Costs
+                Only</button>
+              <button class="export-option" data-type="items"
+                style="display:block;width:100%;text-align:left;background:none;border:none;color:var(--text);padding:6px 8px;border-radius:4px;margin-bottom:2px">Items
+                Only</button>
+              <button class="export-option" data-type="results"
+                style="display:block;width:100%;text-align:left;background:none;border:none;color:var(--text);padding:6px 8px;border-radius:4px;margin-bottom:2px">Results
+                & Timer</button>
+              <button class="export-option" data-type="all"
+                style="display:block;width:100%;text-align:left;background:none;border:none;color:var(--text);padding:6px 8px;border-radius:4px;font-weight:bold">Full
+                Export</button>
+            </div>
+          </div>
+          <button id="importBtn">Import JSON</button>
+          <button class="btn-danger" id="resetAllBtn">Clear All</button>
+          <input type="file" id="fileInput" accept="application/json" style="display:none" />
+          <div style="color:var(--muted);font-size:12px;margin-left:auto">
+            Export your data for backup or sharing • Import previously saved data
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+      <div class="inner">
+        <h2>Costs</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:28%">Item</th>
+              <th style="width:18%">Qty</th>
+              <th style="width:22%">Unit Price (FE)</th>
+              <th style="width:22%">Line Total</th>
+              <th style="width:10%"></th>
+            </tr>
+          </thead>
+          <tbody id="costTbody"></tbody>
+        </table>
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <button class="btn-accent" id="addCostBtn">+ Add Cost</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+      <div class="inner">
+        <h2>Items (Revenue)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:28%">Item</th>
+              <th style="width:18%">Qty</th>
+              <th style="width:22%">Unit Price (FE)</th>
+              <th style="width:22%">Line Total</th>
+              <th style="width:10%"></th>
+            </tr>
+          </thead>
+          <tbody id="itemTbody"></tbody>
+        </table>
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <button class="btn-accent" id="addItemBtn">+ Add Item</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>Pro tip: start the timer when you begin farming, then add/update rows as you go. Profit/hour updates
+        automatically.</div>
+    </footer>
+  </div>
+
+  <datalist id="itemNames">
+    <option value="Flame Sand"></option>
+    <option value="Flame Elementium"></option>
+    <option value="Precious Ember"></option>
+    <option value="Matchless Ember"></option>
+    <option value="Ultimate Ember"></option>
+    <option value="Truth Fossil"></option>
+    <option value="Sacred Fossil"></option>
+    <option value="Amberon Core"></option>
+    <option value="Familiar Nexus"></option>
+    <option value="Corrupted Axis"></option>
+    <option value="Glorious Axis"></option>
+    <option value="Shallow Dream Weapon"></option>
+    <option value="Shallow Dream Armor"></option>
+    <option value="Shallow Dream Trinket"></option>
+    <option value="Sage"></option>
+    <option value="Silver Mound"></option>
+    <option value="Soft Rush"></option>
+    <option value="Night Blooming Cereus"></option>
+    <option value="Gloomy Daffodil"></option>
+    <option value="Golden Iris"></option>
+    <option value="Giant Civet Musk"></option>
+    <option value="Sandalwood Incense"></option>
+    <option value="Stygian Benzoin"></option>
+    <option value="Base Mod"></option>
+    <option value="Mod Warlock"></option>
+    <option value="Mod Sniper"></option>
+    <option value="Mod Tank"></option>
+    <option value="Token Energy"></option>
+    <option value="Token Fluorescent"></option>
+    <option value="Token Affix"></option>
+    <option value="Token Fate"></option>
+    <option value="Token Corrosion"></option>
+    <option value="Token Priceless"></option>
+    <option value="Memory Scrap"></option>
+    <option value="Memory Thread Magic"></option>
+    <option value="Memory Thread Rare"></option>
+    <option value="Memory Thread Epic"></option>
+    <option value="Wedge Magic"></option>
+    <option value="Wedge Rare"></option>
+    <option value="Wedge Legendary"></option>
+    <option value="Unifying Wedge"></option>
+    <option value="Divinity Pact God of Might"></option>
+    <option value="Divinity Pact The Brave"></option>
+    <option value="Divinity Pact Onslaughter"></option>
+    <option value="Divinity Pact Warlord"></option>
+    <option value="Divinity Pact Goddess of Hunting"></option>
+    <option value="Divinity Pact Marksman"></option>
+    <option value="Divinity Pact Bladerunner"></option>
+    <option value="Divinity Pact Druid"></option>
+    <option value="Divinity Pact Goddess of Knowledge"></option>
+    <option value="Divinity Pact Magister"></option>
+    <option value="Divinity Pact Arcanist"></option>
+    <option value="Divinity Pact Elementalist"></option>
+    <option value="Divinity Pact God of War"></option>
+    <option value="Divinity Pact Shadowdancer"></option>
+    <option value="Divinity Pact Ronin"></option>
+    <option value="Divinity Pact Ranger"></option>
+    <option value="Divinity Pact Goddess of Deception"></option>
+    <option value="Divinity Pact Shadowmaster"></option>
+    <option value="Divinity Pact Psychic"></option>
+    <option value="Divinity Pact Warlock"></option>
+    <option value="Divinity Pact God of Machines"></option>
+    <option value="Divinity Pact Machinist"></option>
+    <option value="Divinity Pact Steel Vanguard"></option>
+    <option value="Divinity Pact Alchemist"></option>
+    <option value="Divinity Pact Warrior"></option>
+    <option value="Divinity Pact Assassin"></option>
+    <option value="Divinity Pact Prophet"></option>
+    <option value="Divinity Pact Sentinel"></option>
+    <option value="Divinity Pact Lich"></option>
+    <option value="Divinity Pact Artisan"></option>
+    <option value="Divinity Fragment"></option>
+    <option value="Divinity Pact Fragment"></option>
+    <option value="Prism Gauge Rare"></option>
+    <option value="Prism Gauge Legendary"></option>
+    <option value="Wandering Star"></option>
+    <option value="Star Net"></option>
+    <option value="Active Skill"></option>
+    <option value="Support Skill"></option>
+    <option value="Passive Skill"></option>
+    <option value="Activation Medium"></option>
+    <option value="Magnificent Skill"></option>
+    <option value="Noble Skill"></option>
+    <option value="Elixir of Oblivion"></option>
+    <option value="Netherrealm Resonance"></option>
+    <option value="Winding Key"></option>
+    <option value="Twin Reflection"></option>
+    <option value="Sprout of Legends"></option>
+    <option value="Energy Core"></option>
+    <option value="Secret of Glacial Abyss"></option>
+    <option value="Crows Wail"></option>
+    <option value="Mauds Trick"></option>
+    <option value="Portent Moon"></option>
+    <option value="Lost Secrets"></option>
+    <option value="A Terrible Price"></option>
+    <option value="Helio Rock"></option>
+    <option value="Antonius Help"></option>
+    <option value="Aureole Rock"></option>
+    <option value="Clergy Thinking"></option>
+    <option value="Antonius Research"></option>
+    <option value="Supernova Explosion"></option>
+    <option value="Echo of the Gods"></option>
+    <option value="Stray Fireflies"></option>
+    <option value="Hundredfold Windfall"></option>
+    <option value="Immolating Flame"></option>
+    <option value="Defile the Stars"></option>
+    <option value="Divine Supernova"></option>
+    <option value="The Kiss of the Heartless"></option>
+    <option value="Second Divinity"></option>
+    <option value="Gaze Upon Reflection"></option>
+    <option value="Unhatched Shadow"></option>
+    <option value="Tomorrows Direction"></option>
+    <option value="Uncertain Voyage"></option>
+    <option value="Disappearing Shadow"></option>
+    <option value="Unfettered Constellation"></option>
+    <option value="End of the Past"></option>
+    <option value="Beginning of the Past"></option>
+    <option value="Starry Sky"></option>
+    <option value="Prisms Echo"></option>
+    <option value="Deep Space Beacon"></option>
+    <option value="Glacial Abyss Beacon T7"></option>
+    <option value="Glacial Abyss Beacon T8"></option>
+    <option value="Lava Sea Beacon T7"></option>
+    <option value="Lava Sea Beacon T8"></option>
+    <option value="Steel Forge Beacon T7"></option>
+    <option value="Steel Forge Beacon T8"></option>
+    <option value="Thunder Wastes Beacon T7"></option>
+    <option value="Thunder Wastes Beacon T8"></option>
+    <option value="Voidlands Beacon T7"></option>
+    <option value="Voidlands Beacon T8"></option>
+    <option value="The Beginning"></option>
+    <option value="The End"></option>
+    <option value="Beginning of the End"></option>
+    <option value="Brave I"></option>
+    <option value="Brave II"></option>
+    <option value="Brave III"></option>
+    <option value="Brave IV"></option>
+    <option value="Brave V"></option>
+    <option value="Divinity Emblem Machine"></option>
+    <option value="Divinity Emblem Might"></option>
+    <option value="Divinity Emblem War"></option>
+    <option value="Divinity Emblem Hunting"></option>
+    <option value="Aeterna Key Fleeting"></option>
+    <option value="Aeterna Key Eternal"></option>
+    <option value="Edict Dart"></option>
+    <option value="Edict Dive"></option>
+    <option value="Edict Ruin"></option>
+    <option value="Edict Doom"></option>
+    <option value="Void Sea Craving T1"></option>
+    <option value="Void Sea Ecstacy T2"></option>
+    <option value="Void Sea Sorrow T3"></option>
+    <option value="Desire Core Record T1"></option>
+    <option value="Desire Core Creation T2"></option>
+    <option value="Desire Core Devastation T3"></option>
+    <option value="Queens Wick Imprisioned T1"></option>
+    <option value="Queens Wick Pursuit T2"></option>
+    <option value="Queens Wick Revenge T3"></option>
+    <option value="Queens Grace Slaughter T1"></option>
+    <option value="Queens Grace Authority T2"></option>
+    <option value="Queens Grace Lust T3"></option>
+    <option value="Compass Sinful Plunder"></option>
+    <option value="Compass Sinful Plunder Artifact"></option>
+    <option value="Compass Transgression Plunder"></option>
+    <option value="Compass Novel"></option>
+    <option value="Compass Lavish Novel"></option>
+    <option value="Compass Conquering Novel"></option>
+    <option value="Compass Soldier"></option>
+    <option value="Compass Strength in 123"></option>
+    <option value="Compass Veteran"></option>
+    <option value="Compass Unrivaled Veteran"></option>
+    <option value="Compass Elite"></option>
+    <option value="Compass Generous Elite"></option>
+    <option value="Compass Bountiful Elite"></option>
+    <option value="Compass Boss"></option>
+    <option value="Compass Beacon"></option>
+    <option value="Compass Progressing Beacon"></option>
+    <option value="Compass Ecliptic"></option>
+    <option value="Compass Vast Ecliptic"></option>
+    <option value="Compass Ascendant Ecliptic"></option>
+    <option value="Compass Renown Edge"></option>
+    <option value="Compass Militant"></option>
+    <option value="Compass Priceless Militant"></option>
+    <option value="Compass Trinket Militant"></option>
+    <option value="Compass Ember"></option>
+    <option value="Compass Bounty Ember"></option>
+    <option value="Compass Reserve Ember"></option>
+    <option value="Compass Fluorescent"></option>
+    <option value="Compass Colorful Fluorescent"></option>
+    <option value="Compass Focus Fluorescent"></option>
+    <option value="Compass Flourishing Gods"></option>
+    <option value="Compass War"></option>
+    <option value="Compass Valiant War"></option>
+    <option value="Compass Might"></option>
+    <option value="Compass Flourishing Might Artifact"></option>
+    <option value="Compass Onslaught Might"></option>
+    <option value="Compass Mecha Might Artifact"></option>
+    <option value="Compass Hunting"></option>
+    <option value="Compass General Hunting"></option>
+    <option value="Compass Mechanical"></option>
+    <option value="Compass Brilliant Mechanical Artifact"></option>
+    <option value="Compass Divide Mechanical"></option>
+    <option value="Compass Cruising Mechanical Artifact"></option>
+    <option value="Compass Dark Surge"></option>
+    <option value="Compass Bandit Dark Surge"></option>
+    <option value="Compass Divine Warrior Dark Surge"></option>
+    <option value="Compass Blacksail"></option>
+    <option value="Compass Returning Blacksail"></option>
+    <option value="Compass Cube"></option>
+    <option value="Compass Cube Two Extremes"></option>
+    <option value="Compass Desire Incarnation Cube"></option>
+    <option value="Compass Aeterna"></option>
+    <option value="Compass Familial Aeterna"></option>
+    <option value="Compass Nightmare"></option>
+    <option value="Compass Folklore"></option>
+    <option value="Compass Uncanny Folklore"></option>
+    <option value="Compass Doll"></option>
+    <option value="Compass Collection Doll Artifact"></option>
+    <option value="Compass Collection Clockwork"></option>
+    <option value="Compass Frozen"></option>
+    <option value="Compass Frozen Abundance"></option>
+    <option value="Compass Arcana"></option>
+    <option value="Compass Trump Card Arcana"></option>
+    <option value="Compass The Fated Arcana"></option>
+    <option value="Compass Sandlord"></option>
+    <option value="Compass Outlaw"></option>
+    <option value="Compass Bounty Oultaw"></option>
+    <option value="Compass Alert Outlaw"></option>
+    <option value="Compass Cage"></option>
+    <option value="Compass Golden Cage"></option>
+    <option value="When Sparks Set the Prairie Ablaze"></option>
+    <option value="Sparks of Moth Fire"></option>
+    <option value="Space Rift"></option>
+    <option value="Corner of Divinity"></option>
+    <option value="Fallen Starlight"></option>
+    <option value="God of Might Slate"></option>
+    <option value="God of Hunting Slate"></option>
+    <option value="God of Knowledge Slate"></option>
+    <option value="God of Deception Slate"></option>
+    <option value="God of War Slate"></option>
+    <option value="God of Machines Slate"></option>
+    <option value="Micro Fate"></option>
+    <option value="Medium Fate"></option>
+    <option value="Undetermined Fate"></option>
+    <option value="Kismet"></option>
+    <option value="Dual Kismet"></option>
+    <option value="Lone Walkers Boots"></option>
+    <option value="Eternity"></option>
+    <option value="Memory of Origin"></option>
+    <option value="Memory of Discipline"></option>
+    <option value="Memory of Progress"></option>
+    <option value="Pedigree of the Gods"></option>
+    <option value="Winter of Origin"></option>
+    <option value="Precise Skill"></option>
+    <option value="Truth"></option>
+    <option value="Flourishing Profound Probe"></option>
+    <option value="Flourishing Deep Space Probe"></option>
+    <option value="Gear Profound Probe"></option>
+    <option value="Gear Deep Space Probe"></option>
+    <option value="Ember Profound Probe"></option>
+    <option value="Ember Deep Space Probe"></option>
+    <option value="Fluorescent Profound Probe"></option>
+    <option value="Fluorescent Deep Space Probe"></option>
+    <option value="Compass Profound Probe"></option>
+    <option value="Compass Deep Space Probe"></option>
+    <option value="Beacon Profound Probe"></option>
+    <option value="Divinity Stone"></option>
+    <option value="Pages of Aeterna"></option>
+    <option value="Mist Essence"></option>
+    <option value="Residents Eye"></option>
+    <option value="Snowpaper Fragment"></option>
+    <option value="Inspiration Essence"></option>
+  </datalist>
+
+  <script>
+    (function () {
+      const fmt = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
+      const money = (n) => isFinite(n) ? fmt.format(n) : '—';
+
+      // Item price mapping from message.txt
+      const itemPrices = {
+        "Flame Sand": 0.001,
+        "Flame Elementium": 1,
+        "Precious Ember": 0.13,
+        "Matchless Ember": 0.09,
+        "Ultimate Ember": 18,
+        "Truth Fossil": 13,
+        "Sacred Fossil": 19,
+        "Amberon Core": 0.055,
+        "Familiar Nexus": 98,
+        "Corrupted Axis": 9,
+        "Glorious Axis": 140,
+        "Shallow Dream Weapon": 10,
+        "Shallow Dream Armor": 2.5,
+        "Shallow Dream Trinket": 19,
+        "Sage": 0.05,
+        "Silver Mound": 0.15,
+        "Soft Rush": 0.2,
+        "Night Blooming Cereus": 40,
+        "Gloomy Daffodil": 13,
+        "Golden Iris": 34,
+        "Giant Civet Musk": 200,
+        "Sandalwood Incense": 355,
+        "Stygian Benzoin": 1600,
+        "Base Mod": 11.5,
+        "Mod Warlock": 120,
+        "Mod Sniper": 40,
+        "Mod Tank": 55,
+        "Token Energy": 1,
+        "Token Fluorescent": 5,
+        "Token Affix": 55,
+        "Token Fate": 1.7,
+        "Token Corrosion": 85,
+        "Token Priceless": 730,
+        "Memory Scrap": 0.06,
+        "Memory Thread Magic": 0.015,
+        "Memory Thread Rare": 0.02,
+        "Memory Thread Epic": 1.7,
+        "Wedge Magic": 0.021,
+        "Wedge Rare": 0.22,
+        "Wedge Legendary": 19.5,
+        "Unifying Wedge": 46,
+        "Divinity Pact God of Might": 580,
+        "Divinity Pact The Brave": 198,
+        "Divinity Pact Onslaughter": 240,
+        "Divinity Pact Warlord": 170,
+        "Divinity Pact Goddess of Hunting": 230,
+        "Divinity Pact Marksman": 170,
+        "Divinity Pact Bladerunner": 180,
+        "Divinity Pact Druid": 170,
+        "Divinity Pact Goddess of Knowledge": 590,
+        "Divinity Pact Magister": 400,
+        "Divinity Pact Arcanist": 520,
+        "Divinity Pact Elementalist": 200,
+        "Divinity Pact God of War": 180,
+        "Divinity Pact Shadowdancer": 180,
+        "Divinity Pact Ronin": 180,
+        "Divinity Pact Ranger": 220,
+        "Divinity Pact Goddess of Deception": 450,
+        "Divinity Pact Shadowmaster": 175,
+        "Divinity Pact Psychic": 170,
+        "Divinity Pact Warlock": 170,
+        "Divinity Pact God of Machines": 270,
+        "Divinity Pact Machinist": 170,
+        "Divinity Pact Steel Vanguard": 170,
+        "Divinity Pact Alchemist": 275,
+        "Divinity Pact Warrior": 200,
+        "Divinity Pact Assassin": 400,
+        "Divinity Pact Prophet": 170,
+        "Divinity Pact Sentinel": 170,
+        "Divinity Pact Lich": 510,
+        "Divinity Pact Artisan": 170,
+        "Divinity Fragment": 0.01,
+        "Divinity Pact Fragment": 185,
+        "Prism Gauge Rare": 0.13,
+        "Prism Gauge Legendary": 0.33,
+        "Wandering Star": 7,
+        "Star Net": 165,
+        "Active Skill": 1,
+        "Support Skill": 1,
+        "Passive Skill": 1,
+        "Activation Medium": 1,
+        "Magnificent Skill": 1,
+        "Noble Skill": 1,
+        "Elixir of Oblivion": 0.5,
+        "Netherrealm Resonance": 0.14,
+        "Winding Key": 0.35,
+        "Twin Reflection": 30000,
+        "Sprout of Legends": 110,
+        "Energy Core": 0.04,
+        "Secret of Glacial Abyss": 0.33,
+        "Crows Wail": 4,
+        "Mauds Trick": 0.25,
+        "Portent Moon": 37,
+        "Lost Secrets": 3,
+        "A Terrible Price": 36,
+        "Helio Rock": 100,
+        "Antonius Help": 3,
+        "Aureole Rock": 17,
+        "Clergy Thinking": 175,
+        "Antonius Research": 82,
+        "Supernova Explosion": 11,
+        "Echo of the Gods": 8,
+        "Stray Fireflies": 228,
+        "Hundredfold Windfall": 11.11,
+        "Immolating Flame": 235,
+        "Defile the Stars": 6700,
+        "Divine Supernova": 250,
+        "The Kiss of the Heartless": 1,
+        "Second Divinity": 55,
+        "Gaze Upon Reflection": 2000,
+        "Unhatched Shadow": 180,
+        "Tomorrows Direction": 6,
+        "Uncertain Voyage": 0.4,
+        "Disappearing Shadow": 355,
+        "Unfettered Constellation": 1800,
+        "End of the Past": 300,
+        "Beginning of the Past": 18,
+        "Starry Sky": 1000,
+        "Prisms Echo": 14,
+        "Deep Space Beacon": 11,
+        "Glacial Abyss Beacon T7": 0.3,
+        "Glacial Abyss Beacon T8": 6,
+        "Lava Sea Beacon T7": 0.3,
+        "Lava Sea Beacon T8": 4.5,
+        "Steel Forge Beacon T7": 0.3,
+        "Steel Forge Beacon T8": 4,
+        "Thunder Wastes Beacon T7": 0.3,
+        "Thunder Wastes Beacon T8": 4,
+        "Voidlands Beacon T7": 0.3,
+        "Voidlands Beacon T8": 4,
+        "The Beginning": 1.4,
+        "The End": 0.71,
+        "Beginning of the End": 7,
+        "Brave I": 0.5,
+        "Brave II": 1,
+        "Brave III": 2,
+        "Brave IV": 22,
+        "Brave V": 23,
+        "Divinity Emblem Machine": 3,
+        "Divinity Emblem Might": 50,
+        "Divinity Emblem War": 8,
+        "Divinity Emblem Hunting": 3,
+        "Aeterna Key Fleeting": 0.6,
+        "Aeterna Key Eternal": 0.5,
+        "Edict Dart": 11.5,
+        "Edict Dive": 12,
+        "Edict Ruin": 10.5,
+        "Edict Doom": 28,
+        "Void Sea Craving T1": 13,
+        "Void Sea Ecstacy T2": 20,
+        "Void Sea Sorrow T3": 12,
+        "Desire Core Record T1": 66,
+        "Desire Core Creation T2": 99,
+        "Desire Core Devastation T3": 153,
+        "Queens Wick Imprisioned T1": 22,
+        "Queens Wick Pursuit T2": 95,
+        "Queens Wick Revenge T3": 14,
+        "Queens Grace Slaughter T1": 1,
+        "Queens Grace Authority T2": 9,
+        "Queens Grace Lust T3": 8,
+        "Compass Sinful Plunder": 23,
+        "Compass Sinful Plunder Artifact": 44,
+        "Compass Transgression Plunder": 15,
+        "Compass Novel": 2.3,
+        "Compass Lavish Novel": 3,
+        "Compass Conquering Novel": 11,
+        "Compass Soldier": 0.36,
+        "Compass Strength in 123": 2,
+        "Compass Veteran": 1.1,
+        "Compass Unrivaled Veteran": 8,
+        "Compass Elite": 0.45,
+        "Compass Generous Elite": 5.7,
+        "Compass Bountiful Elite": 117,
+        "Compass Boss": 1.3,
+        "Compass Beacon": 2,
+        "Compass Progressing Beacon": 2,
+        "Compass Ecliptic": 0.3,
+        "Compass Vast Ecliptic": 8,
+        "Compass Ascendant Ecliptic": 14.5,
+        "Compass Renown Edge": 10,
+        "Compass Militant": 1,
+        "Compass Priceless Militant": 7,
+        "Compass Trinket Militant": 2,
+        "Compass Ember": 3,
+        "Compass Bounty Ember": 4,
+        "Compass Reserve Ember": 2,
+        "Compass Fluorescent": 1,
+        "Compass Colorful Fluorescent": 2,
+        "Compass Focus Fluorescent": 3,
+        "Compass Flourishing Gods": 11,
+        "Compass War": 6,
+        "Compass Valiant War": 9,
+        "Compass Might": 0.3,
+        "Compass Flourishing Might Artifact": 0.3,
+        "Compass Onslaught Might": 5,
+        "Compass Mecha Might Artifact": 45,
+        "Compass Hunting": 3,
+        "Compass General Hunting": 2.5,
+        "Compass Mechanical": 0.3,
+        "Compass Brilliant Mechanical Artifact": 1,
+        "Compass Divide Mechanical": 6,
+        "Compass Cruising Mechanical Artifact": 7,
+        "Compass Dark Surge": 0.3,
+        "Compass Bandit Dark Surge": 5,
+        "Compass Divine Warrior Dark Surge": 15,
+        "Compass Blacksail": 1,
+        "Compass Returning Blacksail": 3.5,
+        "Compass Cube": 2,
+        "Compass Cube Two Extremes": 8,
+        "Compass Desire Incarnation Cube": 26,
+        "Compass Aeterna": 0.3,
+        "Compass Familial Aeterna": 1.5,
+        "Compass Nightmare": 4,
+        "Compass Folklore": 1,
+        "Compass Uncanny Folklore": 5,
+        "Compass Doll": 0.3,
+        "Compass Collection Doll Artifact": 2.5,
+        "Compass Collection Clockwork": 23,
+        "Compass Frozen": 0.3,
+        "Compass Frozen Abundance": 2.6,
+        "Compass Arcana": 1.2,
+        "Compass Trump Card Arcana": 7,
+        "Compass The Fated Arcana": 50,
+        "Compass Sandlord": 3,
+        "Compass Outlaw": 12,
+        "Compass Bounty Oultaw": 96,
+        "Compass Alert Outlaw": 150,
+        "Compass Cage": 1.3,
+        "Compass Golden Cage": 280,
+        "When Sparks Set the Prairie Ablaze": 5000,
+        "Sparks of Moth Fire": 1720,
+        "Space Rift": 3000,
+        "Corner of Divinity": 2,
+        "Fallen Starlight": 2,
+        "God of Might Slate": 1,
+        "God of Hunting Slate": 1,
+        "God of Knowledge Slate": 1,
+        "God of Deception Slate": 1,
+        "God of War Slate": 1,
+        "God of Machines Slate": 1,
+        "Micro Fate": 1,
+        "Medium Fate": 1,
+        "Undetermined Fate": 2200,
+        "Kismet": 1,
+        "Dual Kismet": 1,
+        "Lone Walkers Boots": 8000,
+        "Eternity": 36000,
+        "Memory of Origin": 1,
+        "Memory of Discipline": 1,
+        "Memory of Progress": 1,
+        "Pedigree of the Gods": 1,
+        "Winter of Origin": 1700,
+        "Precise Skill": 1,
+        "Truth": 2000,
+        "Flourishing Profound Probe": 10,
+        "Flourishing Deep Space Probe": 70,
+        "Gear Profound Probe": 27,
+        "Gear Deep Space Probe": 140,
+        "Ember Profound Probe": 8,
+        "Ember Deep Space Probe": 25,
+        "Fluorescent Profound Probe": 3,
+        "Fluorescent Deep Space Probe": 60,
+        "Compass Profound Probe": 12,
+        "Compass Deep Space Probe": 54,
+        "Beacon Profound Probe": 6.5,
+        "Divinity Stone": 0.021,
+        "Pages of Aeterna": 0.004,
+        "Mist Essence": 52,
+        "Residents Eye": 0.9,
+        "Snowpaper Fragment": 0.07,
+        "Inspiration Essence": 0.45
+      };
+
+      const els = {
+        timeDisplay: document.getElementById('timeDisplay'),
+        startBtn: document.getElementById('startBtn'),
+        stopBtn: document.getElementById('stopBtn'),
+        resetTimerBtn: document.getElementById('resetTimerBtn'),
+        kpiRevenue: document.getElementById('kpiRevenue'),
+        kpiCost: document.getElementById('kpiCost'),
+        kpiNet: document.getElementById('kpiNet'),
+        kpiPph: document.getElementById('kpiPph'),
+        kpiTax: document.getElementById('kpiTax'),
+        addCostBtn: document.getElementById('addCostBtn'),
+        costTbody: document.getElementById('costTbody'),
+        addItemBtn: document.getElementById('addItemBtn'),
+        itemTbody: document.getElementById('itemTbody'),
+        exportBtn: document.getElementById('exportBtn'),
+        exportMenu: document.getElementById('exportMenu'),
+        importBtn: document.getElementById('importBtn'),
+        fileInput: document.getElementById('fileInput'),
+        resetAllBtn: document.getElementById('resetAllBtn'),
+      };
+
+      const STORAGE_KEY = 'tli-profit-data-v5';
+      const defaultState = { timer: { running: false, start: 0, elapsed: 0 }, costs: [], items: [], settings: { taxEnabled: true } };
+      function load() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch (e) { return null; } }
+      function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+      let state = load() || defaultState;
+      if (!state || typeof state !== 'object') state = JSON.parse(JSON.stringify(defaultState));
+      if (!Array.isArray(state.items)) state.items = [];
+      if (!Array.isArray(state.costs)) state.costs = [];
+      if (!state.settings) state.settings = { taxEnabled: true }; else state.settings.taxEnabled = true;
+
+      // MODIFIED: Ensure existing cost items are migrated to the new structure if they're not already.
+      // This is a simple migration. More complex data might need more careful handling.
+      state.costs.forEach(cost => {
+        if (cost.amount !== undefined && cost.unit === undefined) {
+          cost.unit = cost.amount;
+          cost.qty = 1;
+          delete cost.amount;
+          delete cost.notes;
+        }
+      });
+      save(); // Save the potentially migrated state
+
+      let rafId = null;
+      function msToHMS(ms) { const s = Math.floor(ms / 1000); const hh = String(Math.floor(s / 3600)).padStart(2, '0'); const mm = String(Math.floor((s % 3600) / 60)).padStart(2, '0'); const ss = String(s % 60).padStart(2, '0'); return `${hh}:${mm}:${ss}`; }
+      function getElapsedMs() { const now = Date.now(); return state.timer.running ? state.timer.elapsed + (now - state.timer.start) : state.timer.elapsed; }
+      function tick() { const e = getElapsedMs(); els.timeDisplay.textContent = msToHMS(e); updateKPIs(e); if (state.timer.running) { rafId = requestAnimationFrame(tick); } }
+
+      function start() { if (state.timer.running) return; state.timer.running = true; state.timer.start = Date.now(); save(); cancelAnimationFrame(rafId); tick(); }
+      function stop() { if (!state.timer.running) return; const now = Date.now(); state.timer.elapsed += (now - state.timer.start); state.timer.running = false; state.timer.start = 0; save(); cancelAnimationFrame(rafId); tick(); }
+      function resetTimer() { state.timer = { running: false, start: 0, elapsed: 0 }; save(); cancelAnimationFrame(rafId); tick(); }
+
+      els.startBtn.addEventListener('click', start);
+      els.stopBtn.addEventListener('click', stop);
+      els.resetTimerBtn.addEventListener('click', resetTimer);
+
+      function newId() { return Math.random().toString(36).slice(2, 10); }
+
+      function render() {
+        // COSTS
+        // MODIFIED: Changed render logic to match the new structure (same as Items)
+        els.costTbody.innerHTML = '';
+        state.costs.forEach(row => {
+          const lt = (Number(row.qty) || 0) * (Number(row.unit) || 0);
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+          <td><input type="text" list="itemNames" value="${row.name || ''}" placeholder="Start typing…" data-field="name"></td>
+          <td><input type="number" step="1" value="${row.qty ?? ''}" placeholder="0" data-field="qty"></td>
+          <td><input type="number" step="0.01" value="${row.unit ?? ''}" placeholder="0" data-field="unit"></td>
+          <td>${money(lt)}</td>
+          <td class="row-actions">
+            <button data-act="dup">Duplicate</button>
+            <button class="btn-danger" data-act="del">Delete</button>
+          </td>`;
+          wireRow(tr, 'costs', row.id);
+          els.costTbody.appendChild(tr);
+        });
+
+        // ITEMS
+        els.itemTbody.innerHTML = '';
+        state.items.forEach(row => {
+          const lt = (Number(row.qty) || 0) * (Number(row.unit) || 0);
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+          <td><input type="text" list="itemNames" value="${row.name || ''}" placeholder="Start typing…" data-field="name"></td>
+          <td><input type="number" step="1" value="${row.qty ?? ''}" placeholder="0" data-field="qty"></td>
+          <td><input type="number" step="0.01" value="${row.unit ?? ''}" placeholder="0" data-field="unit"></td>
+          <td>${money(lt)}</td>
+          <td class="row-actions">
+            <button data-act="dup">Duplicate</button>
+            <button class="btn-danger" data-act="del">Delete</button>
+          </td>`;
+          wireRow(tr, 'items', row.id);
+          els.itemTbody.appendChild(tr);
+        });
+
+        tick();
+      }
+
+      function wireRow(tr, listKey, id) {
+        const idx = state[listKey].findIndex(r => r.id === id);
+        tr.querySelectorAll('input').forEach(inp => {
+          inp.addEventListener('input', () => {
+            const field = inp.dataset.field;
+            let val = inp.value;
+            if (inp.type === 'number') { val = inp.value === '' ? '' : Number(inp.value); }
+            const row = state[listKey][idx];
+            row[field] = val;
+
+            // Auto-populate price when item name is selected
+            if (field === 'name' && itemPrices[val] && !row.unit) {
+              row.unit = itemPrices[val];
+              const unitInput = tr.querySelector('[data-field="unit"]');
+              if (unitInput) unitInput.value = itemPrices[val];
+            }
+
+            save();
+
+            // MODIFIED: Update line total for 'costs' as well as 'items'
+            if (listKey === 'items' || listKey === 'costs') {
+              const qty = Number(row.qty) || 0; const unit = Number(row.unit) || 0; const lt = qty * unit; const cells = tr.querySelectorAll('td'); if (cells[3]) cells[3].textContent = money(lt);
+            }
+            updateKPIs(getElapsedMs());
+          });
+        });
+        const del = tr.querySelector('[data-act="del"]'); if (del) del.addEventListener('click', () => { state[listKey].splice(idx, 1); save(); render(); });
+        const dup = tr.querySelector('[data-act="dup"]'); if (dup) dup.addEventListener('click', () => { const copy = JSON.parse(JSON.stringify(state[listKey][idx])); copy.id = newId(); state[listKey].splice(idx + 1, 0, copy); save(); render(); });
+      }
+
+      // MODIFIED: AddCostBtn now adds an object with 'qty' and 'unit'
+      els.addCostBtn.addEventListener('click', () => { state.costs.push({ id: newId(), name: '', qty: '', unit: '' }); save(); render(); });
+      els.addItemBtn.addEventListener('click', () => { state.items.push({ id: newId(), name: '', qty: '', unit: '' }); save(); render(); });
+
+      function totals() {
+        const revenueGross = state.items.reduce((s, r) => s + (Number(r.qty) || 0) * (Number(r.unit) || 0), 0);
+        // Calculate taxable revenue (exclude Flame Elementium as it's the base currency)
+        const taxableRevenue = state.items.reduce((s, r) => {
+          if (r.name === 'Flame Elementium') return s; // No tax on base currency
+          return s + (Number(r.qty) || 0) * (Number(r.unit) || 0);
+        }, 0);
+        // MODIFIED: Cost calculation now uses 'qty' and 'unit'
+        const cost = state.costs.reduce((s, r) => s + (Number(r.qty) || 0) * (Number(r.unit) || 0), 0);
+        const tax = Math.floor(taxableRevenue / 8);
+        const revenue = revenueGross - tax;
+        const net = revenue - cost;
+        return { revenueGross, tax, revenue, cost, net };
+      }
+
+      function updateKPIs(elapsedMs) {
+        const { revenue, tax, cost, net } = totals();
+        els.kpiRevenue.textContent = money(revenue);
+        els.kpiTax.textContent = money(tax);
+        els.kpiCost.textContent = money(cost);
+        els.kpiNet.textContent = money(net);
+        const hours = elapsedMs / (1000 * 60 * 60);
+        const pph = hours > 0 ? net / hours : 0;
+        els.kpiPph.textContent = money(pph);
+      }
+
+      // Add keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+          return; // Don't trigger shortcuts if user is typing in a field
+        }
+        if (e.code === 'Space') {
+          e.preventDefault();
+          state.timer.running ? stop() : start();
+        } else if (e.key === 'r' || e.key === 'R') {
+          e.preventDefault();
+          resetTimer();
+        }
+      });
+
+      // Handle data import/export and reset
+      els.exportBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        els.exportMenu.style.display = els.exportMenu.style.display === 'none' ? 'block' : 'none';
+      });
+
+      // Close export menu when clicking outside
+      document.addEventListener('click', () => {
+        els.exportMenu.style.display = 'none';
+      });
+
+      // Handle export options
+      document.querySelectorAll('.export-option').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const type = btn.dataset.type;
+          let exportData = {};
+          let filename = `tli-farm-${new Date().toISOString().slice(0, 10)}`;
+
+          switch (type) {
+            case 'costs':
+              exportData = { costs: state.costs };
+              filename += '-costs.json';
+              break;
+            case 'items':
+              exportData = { items: state.items };
+              filename += '-items.json';
+              break;
+            case 'results':
+              const { revenue, tax, cost, net } = totals();
+              const elapsedMs = getElapsedMs();
+              const hours = elapsedMs / (1000 * 60 * 60);
+              const pph = hours > 0 ? net / hours : 0;
+              exportData = {
+                timer: state.timer,
+                results: {
+                  elapsedMs,
+                  hours: Number(hours.toFixed(4)),
+                  revenue,
+                  tax,
+                  cost,
+                  net,
+                  profitPerHour: Number(pph.toFixed(2))
+                }
+              };
+              filename += '-results.json';
+              break;
+            case 'all':
+            default:
+              exportData = state;
+              filename += '-full.json';
+              break;
+          }
+
+          const dataStr = JSON.stringify(exportData, null, 2);
+          const dataBlob = new Blob([dataStr], { type: 'application/json' });
+          const url = URL.createObjectURL(dataBlob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          els.exportMenu.style.display = 'none';
+        });
+      });
+
+      els.importBtn.addEventListener('click', () => {
+        els.fileInput.click();
+      });
+
+      els.fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const importedData = JSON.parse(e.target.result);
+            let imported = false;
+
+            // Handle different import types
+            if (importedData.costs && Array.isArray(importedData.costs)) {
+              // Costs-only import
+              importedData.costs.forEach(cost => {
+                if (cost.amount !== undefined && cost.unit === undefined) {
+                  cost.unit = cost.amount;
+                  cost.qty = 1;
+                  delete cost.amount;
+                  delete cost.notes;
+                }
+              });
+              state.costs = importedData.costs;
+              imported = true;
+            }
+
+            if (importedData.items && Array.isArray(importedData.items)) {
+              // Items-only import
+              state.items = importedData.items;
+              imported = true;
+            }
+
+            if (importedData.timer && typeof importedData.timer === 'object') {
+              // Timer/results import
+              state.timer = importedData.timer;
+              imported = true;
+            }
+
+            // Full import (legacy and new format)
+            if (importedData.timer && importedData.items && importedData.costs) {
+              state = importedData;
+              // Run migration on imported data
+              state.costs.forEach(cost => {
+                if (cost.amount !== undefined && cost.unit === undefined) {
+                  cost.unit = cost.amount;
+                  cost.qty = 1;
+                  delete cost.amount;
+                  delete cost.notes;
+                }
+              });
+              imported = true;
+            }
+
+            if (imported) {
+              save();
+              render();
+              alert('Data imported successfully!');
+            } else {
+              alert('Invalid JSON file format. Please ensure the file contains valid farming data.');
+            }
+          } catch (err) {
+            alert('Error parsing JSON file. Please check the file format.');
+            console.error(err);
+          } finally {
+            els.fileInput.value = ''; // Reset file input
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      els.resetAllBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to clear all data, including the timer? This cannot be undone.')) {
+          state = JSON.parse(JSON.stringify(defaultState));
+          save();
+          render();
+        }
+      });
+
+      render(); // Initial render
+    })();
+  </script>
+</body>
+
+</html>
