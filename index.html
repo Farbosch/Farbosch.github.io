@@ -4,7 +4,43 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Torchlight Infinite – Farm Profit Calculator (+ AH Tax)</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    :root{ --bg:#0b0f14;--panel:#121822;--panel-2:#0f141c;--accent:#ff8c32;--accent-2:#ffc16e;--text:#e7eef7;--muted:#9fb0c3;--danger:#ff5a63;--shadow:0 10px 30px rgba(0,0,0,.35);--radius:16px; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial;background:radial-gradient(1200px 700px at 80% -100px,#1b2230 0%,transparent 60%),var(--bg);color:var(--text);line-height:1.4}
+    .container{max-width:1200px;margin:32px auto;padding:0 16px}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+    .logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:var(--shadow)}
+    .logo span{font-weight:900;color:#121212}
+    h1{font-size:clamp(20px,4vw,30px);margin:0}
+    .subtitle{color:var(--muted);font-size:14px}
+    .card{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid rgba(255,255,255,.05);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .card h2{margin:0 0 8px;font-size:18px}
+    .card .inner{padding:18px}
+    .timer{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .time{font-size:40px;font-weight:800;letter-spacing:1px}
+    .btns{display:flex;gap:10px;flex-wrap:wrap}
+    button{appearance:none;border:none;background:#1a2331;color:var(--text);padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;transition:transform .05s ease,filter .2s ease;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+    button:hover{filter:brightness(1.15)}
+    button:active{transform:translateY(1px)}
+    .btn-accent{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#111;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+    .btn-danger{background:linear-gradient(135deg,#ff6e6e,var(--danger));color:#111}
+    table{width:100%;border-collapse:separate;border-spacing:0 10px}
+    thead th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800;text-align:left;padding:0 10px}
+    tbody td{background:#0e141d;padding:12px 10px;vertical-align:middle}
+    tbody tr td:first-child{border-top-left-radius:12px;border-bottom-left-radius:12px}
+    tbody tr td:last-child{border-top-right-radius:12px;border-bottom-right-radius:12px}
+    input[type="number"],input[type="text"]{width:100%;background:#0b111a;border:1px solid rgba(255,255,255,.06);color:var(--text);padding:10px 12px;border-radius:10px;font-size:14px}
+    .row-actions{display:flex;gap:6px;justify-content:flex-end}
+    .summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    @media(min-width:700px){.summary{grid-template-columns:repeat(5,minmax(0,1fr))}}
+    .kpi{background:linear-gradient(180deg,#0c1119,#0a0f16);border:1px solid rgba(255,255,255,.06);padding:16px;border-radius:14px}
+    .kpi small{color:var(--muted);display:block;margin-bottom:6px}
+    .kpi .value{font-weight:900;font-size:20px}
+    .disclaimer{color:var(--muted);font-size:12px;margin-top:8px}
+    footer{margin-top:22px;color:var(--muted);font-size:12px}
+  </style>
 </head>
 <body>
   <div class="container">
@@ -165,9 +201,6 @@
     <option value="Fire Lords"></option>
     <option value="Flame Elementium"></option>
     <option value="Flame Sand"></option>
-    <option value="Flame Sand Flame Elementium Precious Ember Matchless Ember Ultimate Ember Truth Fossil Sacred Fossil"></option>
-    <option value="Flame Sand Flame Elementium Precious Ember Matchless Ember Ultimate Ember Truth Fossil Sacred Fossil Amberon Core"></option>
-    <option value="Flame Sand Flame Elementium Precious Ember Matchless Ember Ultimate Ember Truth Fossil Sacred Fossil Amberon Core Familiar Nexus Corrupted Axis Glorious Axis Shallow Dream Weapon Shallow Dream Armor Shallow Dream Trinket Sage Silver Mound Soft Rush Night Blooming Cereus Gloomy Daffodil Golden Iris Giant Civet Musk Sandalwood Incense Stygian Benzoin Ancient Blenders Tear Base Mod Mod Warlock Mod Vanguard Mod Sniper Mod Tank Token Energy Token Fluorescent Token Affix Token Fate Token Corrosion Token"></option>
     <option value="Fleeting Aeterna Key"></option>
     <option value="Fluorescent Compass Focus Fluorescent Compass War Compass Valiant"></option>
     <option value="Gaze Upon Reflection"></option>
@@ -175,7 +208,7 @@
     <option value="Glacial Abyss Beacon T7"></option>
     <option value="Glacial Abyss Beacon T8"></option>
     <option value="Gloomy Daffodil"></option>
-    <option value."Glorious Axis"></option>
+    <option value="Glorious Axis"></option>
     <option value="God of Deception Slate"></option>
     <option value="God of Hunting Slate"></option>
     <option value="God of Knowledge Slate"></option>
@@ -197,7 +230,7 @@
     <option value="Lost Secrets"></option>
     <option value="Magic Memory Thread"></option>
     <option value="Magic Wedge"></option>
-    <option value="Magnificent Skill"></option>
+    <option value.="Magnificent Skill"></option>
     <option value="Matchless Ember"></option>
     <option value="Mauds Trick"></option>
     <option value="Mechanical Artifact Compass Cruising Mechanical Artifact Compass Dark"></option>
@@ -239,7 +272,7 @@
     <option value="Queens Grace Authority T2"></option>
     <option value="Queens Grace Lust T3"></option>
     <option value="Queens Grace Slaughter T1"></option>
-    <option valueValue="Queens Wick Imprisioned T1"></option>
+    <option value="Queens Wick Imprisioned T1"></option>
     <option value="Queens Wick Pursuit T2"></option>
     <option value="Queens Wick Revenge T3"></option>
     <option value="Rare Memory Thread"></option>
@@ -252,7 +285,7 @@
     <option value="Sandalwood Incense"></option>
     <option value="Sandlord"></option>
     <option value="Second Divinity"></option>
-    <option value="Secret of Glacial Abyss"></option>
+    <option value."Secret of Glacial Abyss"></option>
     <option value="Shallow Dream Armor"></option>
     <option value="Shallow Dream Trinket"></option>
     <option value="Shallow Dream Weapon"></option>
@@ -304,6 +337,233 @@
     <option value="Winter of Origin"></option>
   </datalist>
 
-  <script src="app.js"></script>
+  <script>
+  (function(){
+    const fmt = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
+    const money = (n)=> isFinite(n) ? fmt.format(n) : '—';
+
+    const els = {
+      timeDisplay: document.getElementById('timeDisplay'),
+      startBtn: document.getElementById('startBtn'),
+      stopBtn: document.getElementById('stopBtn'),
+      resetTimerBtn: document.getElementById('resetTimerBtn'),
+      kpiRevenue: document.getElementById('kpiRevenue'),
+      kpiCost: document.getElementById('kpiCost'),
+      kpiNet: document.getElementById('kpiNet'),
+      kpiPph: document.getElementById('kpiPph'),
+      kpiTax: document.getElementById('kpiTax'),
+      addCostBtn: document.getElementById('addCostBtn'),
+      costTbody: document.getElementById('costTbody'),
+      addItemBtn: document.getElementById('addItemBtn'),
+      itemTbody: document.getElementById('itemTbody'),
+      exportBtn: document.getElementById('exportBtn'),
+      importBtn: document.getElementById('importBtn'),
+      fileInput: document.getElementById('fileInput'),
+      resetAllBtn: document.getElementById('resetAllBtn'),
+    };
+
+    const STORAGE_KEY = 'tli-profit-data-v5';
+    const defaultState = { timer: { running:false, start:0, elapsed:0 }, costs: [], items: [], settings: { taxEnabled: true } };
+    function load(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)); }catch(e){ return null; } }
+    function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+    let state = load() || defaultState;
+    if (!state || typeof state !== 'object') state = JSON.parse(JSON.stringify(defaultState));
+    if (!Array.isArray(state.items)) state.items = [];
+    if (!Array.isArray(state.costs)) state.costs = [];
+    if (!state.settings) state.settings = { taxEnabled: true }; else state.settings.taxEnabled = true;
+
+    // MODIFIED: Ensure existing cost items are migrated to the new structure if they're not already.
+    // This is a simple migration. More complex data might need more careful handling.
+    state.costs.forEach(cost => {
+        if (cost.amount !== undefined && cost.unit === undefined) {
+            cost.unit = cost.amount;
+            cost.qty = 1;
+            delete cost.amount;
+            delete cost.notes;
+        }
+    });
+    save(); // Save the potentially migrated state
+
+    let rafId = null;
+    function msToHMS(ms){ const s = Math.floor(ms/1000); const hh = String(Math.floor(s/3600)).padStart(2,'0'); const mm = String(Math.floor((s%3600)/60)).padStart(2,'0'); const ss = String(s%60).padStart(2,'0'); return `${hh}:${mm}:${ss}`; }
+    function getElapsedMs(){ const now = Date.now(); return state.timer.running ? state.timer.elapsed + (now - state.timer.start) : state.timer.elapsed; }
+    function tick(){ const e = getElapsedMs(); els.timeDisplay.textContent = msToHMS(e); updateKPIs(e); if(state.timer.running){ rafId = requestAnimationFrame(tick); } }
+
+    function start(){ if(state.timer.running) return; state.timer.running = true; state.timer.start = Date.now(); save(); cancelAnimationFrame(rafId); tick(); }
+    function stop(){ if(!state.timer.running) return; const now = Date.now(); state.timer.elapsed += (now - state.timer.start); state.timer.running = false; state.timer.start = 0; save(); cancelAnimationFrame(rafId); tick(); }
+    function resetTimer(){ state.timer = { running:false, start:0, elapsed:0 }; save(); cancelAnimationFrame(rafId); tick(); }
+
+    els.startBtn.addEventListener('click', start);
+    els.stopBtn.addEventListener('click', stop);
+    els.resetTimerBtn.addEventListener('click', resetTimer);
+
+    function newId(){ return Math.random().toString(36).slice(2,10); }
+
+    function render(){
+      // COSTS
+      // MODIFIED: Changed render logic to match the new structure (same as Items)
+      els.costTbody.innerHTML = '';
+      state.costs.forEach(row=>{
+        const lt = (Number(row.qty)||0) * (Number(row.unit)||0);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><input type="text" list="itemNames" value="${row.name||''}" placeholder="Start typing…" data-field="name"></td>
+          <td><input type="number" step="1" value="${row.qty??''}" placeholder="0" data-field="qty"></td>
+          <td><input type="number" step="0.01" value="${row.unit??''}" placeholder="0" data-field="unit"></td>
+          <td>${money(lt)}</td>
+          <td class="row-actions">
+            <button data-act="dup">Duplicate</button>
+            <button class="btn-danger" data-act="del">Delete</button>
+          </td>`;
+        wireRow(tr, 'costs', row.id);
+        els.costTbody.appendChild(tr);
+      });
+
+      // ITEMS
+      els.itemTbody.innerHTML = '';
+      state.items.forEach(row=>{
+        const lt = (Number(row.qty)||0) * (Number(row.unit)||0);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><input type="text" list="itemNames" value="${row.name||''}" placeholder="Start typing…" data-field="name"></td>
+          <td><input type="number" step="1" value="${row.qty??''}" placeholder="0" data-field="qty"></td>
+          <td><input type="number" step="0.01" value="${row.unit??''}" placeholder="0" data-field="unit"></td>
+          <td>${money(lt)}</td>
+          <td class="row-actions">
+            <button data-act="dup">Duplicate</button>
+            <button class="btn-danger" data-act="del">Delete</button>
+          </td>`;
+        wireRow(tr, 'items', row.id);
+        els.itemTbody.appendChild(tr);
+      });
+
+      tick();
+    }
+
+    function wireRow(tr, listKey, id){
+      const idx = state[listKey].findIndex(r=>r.id===id);
+      tr.querySelectorAll('input').forEach(inp=>{
+        inp.addEventListener('input', ()=>{
+          const field = inp.dataset.field;
+          let val = inp.value;
+          if(inp.type==='number'){ val = inp.value === '' ? '' : Number(inp.value); }
+          const row = state[listKey][idx];
+          row[field] = val;
+          save();
+          
+          // MODIFIED: Update line total for 'costs' as well as 'items'
+          if(listKey==='items' || listKey==='costs'){
+            const qty = Number(row.qty)||0; const unit = Number(row.unit)||0; const lt = qty * unit; const cells = tr.querySelectorAll('td'); if(cells[3]) cells[3].textContent = money(lt);
+          }
+          updateKPIs(getElapsedMs());
+        });
+      });
+      const del = tr.querySelector('[data-act="del"]'); if(del) del.addEventListener('click', ()=>{ state[listKey].splice(idx,1); save(); render(); });
+      const dup = tr.querySelector('[data-act="dup"]'); if(dup) dup.addEventListener('click', ()=>{ const copy = JSON.parse(JSON.stringify(state[listKey][idx])); copy.id = newId(); state[listKey].splice(idx+1, 0, copy); save(); render(); });
+    }
+
+    // MODIFIED: AddCostBtn now adds an object with 'qty' and 'unit'
+    els.addCostBtn.addEventListener('click', ()=>{ state.costs.push({ id:newId(), name:'', qty:'', unit:'' }); save(); render(); });
+    els.addItemBtn.addEventListener('click', ()=>{ state.items.push({ id:newId(), name:'', qty:'', unit:'' }); save(); render(); });
+
+    function totals() {
+        const revenueGross = state.items.reduce((s, r) => s + (Number(r.qty) || 0) * (Number(r.unit) || 0), 0);
+        // MODIFIED: Cost calculation now uses 'qty' and 'unit'
+        const cost = state.costs.reduce((s, r) => s + (Number(r.qty) || 0) * (Number(r.unit) || 0), 0);
+        const tax = Math.floor(revenueGross / 8);
+        const revenue = revenueGross - tax;
+        const net = revenue - cost;
+        return { revenueGross, tax, revenue, cost, net };
+    }
+
+    function updateKPIs(elapsedMs) {
+        const { revenue, tax, cost, net } = totals();
+        els.kpiRevenue.textContent = money(revenue);
+        els.kpiTax.textContent = money(tax);
+        els.kpiCost.textContent = money(cost);
+        els.kpiNet.textContent = money(net);
+        const hours = elapsedMs / (1000 * 60 * 60);
+        const pph = hours > 0 ? net / hours : 0;
+        els.kpiPph.textContent = money(pph);
+    }
+
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', (e)=>{
+      if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+          return; // Don't trigger shortcuts if user is typing in a field
+      }
+      if (e.code === 'Space') {
+          e.preventDefault();
+          state.timer.running ? stop() : start();
+      } else if (e.key === 'r' || e.key === 'R') {
+          e.preventDefault();
+          resetTimer();
+      }
+    });
+
+    // Handle data import/export and reset
+    els.exportBtn.addEventListener('click', () => {
+        const dataStr = JSON.stringify(state, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `tli-farm-${new Date().toISOString().slice(0,10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    els.importBtn.addEventListener('click', () => {
+        els.fileInput.click();
+    });
+
+    els.fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                // Basic validation
+                if (importedData && typeof importedData.timer === 'object' && Array.isArray(importedData.items) && Array.isArray(importedData.costs)) {
+                    state = importedData;
+                    // MODIFIED: Run the same migration on imported data
+                    state.costs.forEach(cost => {
+                        if (cost.amount !== undefined && cost.unit === undefined) {
+                            cost.unit = cost.amount;
+                            cost.qty = 1;
+                            delete cost.amount;
+                            delete cost.notes;
+                        }
+                    });
+                    save();
+                    render();
+                } else {
+                    alert('Invalid JSON file format.');
+                }
+            } catch (err) {
+                alert('Error parsing JSON file.');
+                console.error(err);
+            } finally {
+                els.fileInput.value = ''; // Reset file input
+            }
+        };
+        reader.readAsText(file);
+    });
+
+    els.resetAllBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to clear all data, including the timer? This cannot be undone.')) {
+            state = JSON.parse(JSON.stringify(defaultState));
+            save();
+            render();
+        }
+    });
+
+    render(); // Initial render
+  })();
+  </script>
 </body>
 </html>
